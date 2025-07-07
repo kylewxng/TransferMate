@@ -53,7 +53,7 @@ export default function Login() {
           Welcome to TransferMate
         </h1>
         <p className="text-center text-gray-600 mb-4 text-sm">
-          Built for transfer students, for transfer students.
+          Built from transfer students, for transfer students.
         </p>
 
         <form onSubmit={handleSubmit}>

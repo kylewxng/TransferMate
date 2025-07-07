@@ -25,7 +25,12 @@ export default function Dashboard() {
           </div>
 
           <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-10 text-sm font-medium">
-            <button className="hover:text-gray-600">Dashboard</button>
+            <button
+              className="hover:text-gray-600"
+              onClick={() => navigate("/dashboard")}
+            >
+              Dashboard
+            </button>
             <button className="hover:text-gray-600">Courses</button>
             <button className="hover:text-gray-600">Planner</button>
             <button className="hover:text-gray-600">About</button>
@@ -62,7 +67,10 @@ export default function Dashboard() {
           future, one course at a time.
         </p>
         <div className="flex justify-center gap-4 mb-20">
-          <button className="bg-indigo-600 text-white px-7 py-3 rounded-full shadow-md text-base hover:opacity-90">
+          <button
+            className="bg-indigo-600 text-white px-7 py-3 rounded-full shadow-md text-base hover:opacity-90"
+            onClick={() => navigate("/survey")}
+          >
             Start now
           </button>
           <button
