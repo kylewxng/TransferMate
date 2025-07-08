@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signOut, getAuth } from "firebase/auth";
-import { auth } from "../firebase/srcfirebase";
+import NavBar from "../components/NavBar";
 
 // Full AP exams list from your provided list
 const apExamOptions = [
@@ -119,50 +119,8 @@ export default function Survey() {
   return (
     <div className="min-h-screen bg-white font-inter">
       {/* Sticky Navbar */}
-      <header className="sticky top-0 bg-white z-50">
-        <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => navigate("/dashboard")}
-          >
-            <img
-              src="/images/app-logo.png"
-              alt="Logo"
-              className="h-6 w-6 mr-2"
-            />
-            <span className="text-lg font-semibold">TransferMate</span>
-          </div>
 
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-10 text-sm font-medium">
-            <button
-              className="hover:text-gray-600"
-              onClick={() => navigate("/dashboard")}
-            >
-              Dashboard
-            </button>
-            <button className="hover:text-gray-600">Courses</button>
-            <button className="hover:text-gray-600">Planner</button>
-            <button className="hover:text-gray-600">About</button>
-          </div>
-
-          <button
-            className="bg-black text-white text-sm px-7 py-3.5 rounded-full hover:opacity-90"
-            onClick={() => {
-              const auth = getAuth();
-              signOut(auth)
-                .then(() => {
-                  alert("Logged out successfully");
-                  navigate("/");
-                })
-                .catch((error) => {
-                  console.error("Error signing out:", error);
-                });
-            }}
-          >
-            Log out
-          </button>
-        </nav>
-      </header>
+      <NavBar />
 
       {/* Main Scrollable Content */}
       <div className="max-w-3xl mx-auto p-6 space-y-10">
