@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { signOut, getAuth } from "firebase/auth";
 import { useRef } from "react";
+import { motion } from "framer-motion"; // 👈 added this
 import NavBar from "../components/NavBar";
 
 export default function Dashboard() {
@@ -9,12 +10,16 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-white font-inter">
-      {/* Sticky Navbar */}
-
       <NavBar />
 
       {/* Hero Section */}
-      <main className="max-w-3xl mx-auto text-center px-6 py-20">
+      <motion.main
+        className="max-w-3xl mx-auto text-center px-6 py-20"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
         <h1 className="text-5xl font-bold leading-tight mb-6">
           Plan your college transfer
           <br />
@@ -45,22 +50,32 @@ export default function Dashboard() {
         <div className="bg-gray-200 h-80 flex items-center justify-center rounded shadow mb-10">
           <p className="text-sm text-gray-700">Infinite carousel app demo...</p>
         </div>
-      </main>
+      </motion.main>
 
       {/* How it works Section */}
-      <section
+      <motion.section
         className="max-w-5xl mx-auto px-6 pb-24"
         style={{ scrollMarginTop: "100px" }}
         ref={howItWorksRef}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        viewport={{ once: true }}
       >
         <h2 className="text-3xl font-bold mb-10 text-center">
           How does TransferMate work?
         </h2>
 
         <div className="bg-white border rounded-xl shadow-sm p-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Steps */}
           {[1, 2, 3, 4].map((step) => (
-            <>
+            <motion.div
+              key={step}
+              className="flex flex-col gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: step * 0.1 }}
+              viewport={{ once: true }}
+            >
               <div className="flex gap-4 items-start">
                 <div className="h-12 w-12 rounded-full bg-purple-300 shadow-md flex items-center justify-center font-bold text-white text-lg flex-shrink-0">
                   {step}
@@ -117,10 +132,10 @@ export default function Dashboard() {
               <div className="bg-gray-200 h-56 rounded shadow-sm flex items-center justify-center">
                 <p className="text-xs text-gray-500">Screenshot of feature</p>
               </div>
-            </>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

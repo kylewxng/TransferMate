@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signOut, getAuth } from "firebase/auth";
 import NavBar from "../components/NavBar";
+import { motion } from "framer-motion";
 
 // Full AP exams list from your provided list
 const apExamOptions = [
