@@ -20,7 +20,7 @@ function NavBar() {
             className="hover:text-gray-600"
             onClick={() => navigate("/dashboard")}
           >
-            Dashboard
+            Home
           </button>
           <button className="hover:text-gray-600">Courses</button>
           <button className="hover:text-gray-600">Planner</button>
