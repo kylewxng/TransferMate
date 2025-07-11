@@ -4,6 +4,7 @@ import { X, Check } from "lucide-react"; // Added Check icon import
 import NavBar from "../components/NavBar";
 import AppRouter from "../routes/AppRouter";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const steps = [
   "AP Exams",
@@ -100,6 +101,18 @@ const COLLEGES = [
   "Mt. San Antonio College",
   "De Anza College",
   "Rio Hondo College",
+  "Pasadena City College",
+  "Santa Monica College",
+  "Orange Coast College",
+  "Irvine Valley College",
+  "Fullerton College",
+  "El Camino College",
+  "Glendale Community College",
+  "Saddleback College",
+  "Chabot College",
+  "Los Angeles City College",
+  "San Diego Mesa College",
+  "City College of San Francisco",
 ];
 
 const UC_CAMPUSES = [
@@ -108,6 +121,10 @@ const UC_CAMPUSES = [
   "University of California, Berkeley (UCB)",
   "University of California, Irvine (UCI)",
   "University of California, Santa Barbara (UCSB)",
+  "University of California, Riverside (UCR)",
+  "University of California, Santa Cruz (UCSC)",
+  "University of California, Davis (UCD)",
+  "University of California, Merced (UCM)",
 ];
 
 export default function Survey() {
@@ -132,6 +149,8 @@ export default function Survey() {
     primary: "",
     alternate: "",
   });
+  const [schoolSearch, setSchoolSearch] = useState("");
+  const [editingSchoolIndex, setEditingSchoolIndex] = useState(null);
 
   const handleAddItem = (item, list, setList) => {
     if (item.trim() && !list.includes(item)) {
@@ -162,7 +181,7 @@ export default function Survey() {
 
   // Updated StepIndicator with checkmarks and connecting bars
   const StepIndicator = () => (
-    <div className="flex flex-col items-center px-4 pt-8">
+    <div className="flex flex-col items-start px-6 pt-10 space-y-8">
       {steps.map((step, i) => {
         const isCompleted = i < currentStep;
         const isActive = i === currentStep;
@@ -170,23 +189,21 @@ export default function Survey() {
         return (
           <div
             key={i}
-            className="flex flex-col items-center cursor-pointer relative"
+            className="flex items-center relative cursor-pointer"
             onClick={() => setCurrentStep(i)}
-            style={{ zIndex: 10 }}
           >
-            {/* Connecting bar */}
+            {/* Vertical connecting bar */}
             {i < steps.length - 1 && (
               <div
-                className={`absolute left-1/2 transform -translate-x-1/2 top-6 h-12 w-1 ${
+                className={`absolute left-4 top-8 h-10 w-1 transform -translate-x-1/2 ${
                   i < currentStep - 1 ? "bg-blue-500" : "bg-gray-300"
                 }`}
-                style={{ zIndex: 0 }}
               />
             )}
 
-            {/* Circle with border and content */}
+            {/* Circle */}
             <div
-              className={`w-8 h-8 rounded-full border-4 flex items-center justify-center
+              className={`w-8 h-8 rounded-full border-4 flex items-center justify-center mr-4
                 ${
                   isCompleted
                     ? "bg-blue-500 border-blue-500"
@@ -207,7 +224,12 @@ export default function Survey() {
               )}
             </div>
 
-            <span className="text-xs mt-1 text-center w-20 leading-tight select-none">
+            {/* Step label */}
+            <span
+              className={`text-sm font-semibold ${
+                isActive ? "text-blue-600" : "text-gray-700"
+              }`}
+            >
               {step}
             </span>
           </div>
@@ -283,18 +305,25 @@ export default function Survey() {
 
         <main className="flex-1 px-12 py-8">
           {currentStep === 0 && (
-            <div>
-              <h1 className="text-2xl font-bold mb-1">AP Exams</h1>
-              <p className="text-gray-600 mb-2">
-                Enter your passed AP exams (score of 3 or above)
-              </p>
-              <SearchInput
-                placeholder="Search AP exams..."
-                onEnter={(val) => handleAddItem(val, apExams, setApExams)}
-                suggestions={AP_EXAMS}
-              />
-              {renderTags(apExams, "bg-blue-200", setApExams)}
-            </div>
+            <motion.div
+              key="step-0"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div>
+                <h1 className="text-2xl font-bold mb-1">AP Exams</h1>
+                <p className="text-gray-600 mb-2">
+                  Enter your passed AP exams (score of 3 or above)
+                </p>
+                <SearchInput
+                  placeholder="Search AP exams..."
+                  onEnter={(val) => handleAddItem(val, apExams, setApExams)}
+                  suggestions={AP_EXAMS}
+                />
+                {renderTags(apExams, "bg-blue-200", setApExams)}
+              </div>
+            </motion.div>
           )}
 
           {currentStep === 1 && (
@@ -329,53 +358,161 @@ export default function Survey() {
 
           {currentStep === 3 && (
             <div>
-              <h1 className="text-2xl font-bold mb-1">Courses</h1>
-              <p className="text-gray-600 mb-2">
+              <h1 className="text-3xl font-bold mb-1">Courses</h1>
+              <p className="text-gray-600 mb-6">
                 Enter your completed UC transferable college courses
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {courses.map((course, idx) => (
-                  <div key={idx} className="border rounded p-4 shadow-sm">
-                    <p className="font-semibold">{course.title}</p>
-                    <p className="text-sm text-gray-500">
-                      {course.term} • {course.units} Units • Grade:{" "}
-                      {course.grade}
+                  <div
+                    key={idx}
+                    className="border rounded-xl shadow-sm p-4 bg-white"
+                  >
+                    <p className="font-semibold text-md">{course.title}</p>
+                    <p className="text-sm text-gray-600">
+                      Units: {course.units}
                     </p>
+                    <p className="text-sm text-gray-600">{course.term}</p>
+                    <div className="flex justify-between mt-4">
+                      <button
+                        className="text-blue-600 hover:underline"
+                        onClick={() => {
+                          setCourseForm(course);
+                          setCourses(courses.filter((_, i) => i !== idx));
+                          setShowCourseModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-500 hover:underline"
+                        onClick={() =>
+                          setCourses(courses.filter((_, i) => i !== idx))
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
-              <button
-                onClick={() => setShowCourseModal(true)}
-                className="mt-4 bg-red-300 text-white px-4 py-2 rounded"
-              >
-                Add a course
-              </button>
+
+              <div className="mt-10">
+                <button
+                  onClick={() => {
+                    setCourseForm({
+                      term: "",
+                      title: "",
+                      units: "",
+                      grade: "",
+                    });
+                    setShowCourseModal(true);
+                  }}
+                  className="bg-red-400 text-white font-semibold px-6 py-3 rounded-xl shadow hover:bg-red-500"
+                >
+                  Add a course
+                </button>
+              </div>
             </div>
           )}
 
           {currentStep === 4 && (
             <div>
-              <h1 className="text-2xl font-bold mb-1">Schools/Majors</h1>
-              <p className="text-gray-600 mb-2">
-                Enter the UC campuses and the majors you plan to apply to
+              <h1 className="text-3xl font-bold mb-1">Schools</h1>
+              <p className="text-gray-600 mb-4">
+                Enter the UC campuses you plan to apply to (you can change these
+                later on)
               </p>
-              <div className="space-y-4">
+
+              <div className="relative max-w-lg mb-6">
+                <div className="absolute left-3 top-3 text-gray-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm"
+                  placeholder="Search UC campuses"
+                  value={schoolSearch}
+                  onChange={(e) => setSchoolSearch(e.target.value)}
+                />
+                {schoolSearch && (
+                  <ul className="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
+                    {UC_CAMPUSES.filter(
+                      (s) =>
+                        s.toLowerCase().includes(schoolSearch.toLowerCase()) &&
+                        !schools.some((sch) => sch.school === s)
+                    ).map((school, idx) => (
+                      <li
+                        key={idx}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          setMajorForm({ school, primary: "", alternate: "" });
+                          setShowMajorModal(true);
+                          setSchoolSearch("");
+                          setEditingSchoolIndex(null);
+                        }}
+                      >
+                        {school}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {schools.map((school, idx) => (
-                  <div key={idx} className="border rounded p-4 shadow-sm">
-                    <p className="font-semibold text-blue-600">
+                  <div
+                    key={idx}
+                    className="border rounded-xl shadow-sm p-4 bg-purple-100"
+                  >
+                    <p className="font-semibold text-blue-700 text-sm mb-2">
                       {school.school}
                     </p>
-                    <p className="text-sm">Primary: {school.primary}</p>
-                    <p className="text-sm">Alternate: {school.alternate}</p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Primary Major:</span>{" "}
+                      {school.primary}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Alternate Major:</span>{" "}
+                      {school.alternate}
+                    </p>
+                    <div className="flex justify-between mt-4">
+                      <button
+                        className="text-blue-600 hover:underline"
+                        onClick={() => {
+                          setMajorForm(school);
+                          setEditingSchoolIndex(idx);
+                          setShowMajorModal(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-500 hover:underline"
+                        onClick={() =>
+                          setSchools(schools.filter((_, i) => i !== idx))
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
-              <button
-                onClick={() => setShowMajorModal(true)}
-                className="mt-4 bg-purple-300 text-white px-4 py-2 rounded"
-              >
-                Add a school/major
-              </button>
             </div>
           )}
 
@@ -467,52 +604,130 @@ export default function Survey() {
         </main>
 
         {showCourseModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-            <div className="bg-white p-6 rounded shadow-md w-96">
-              <h2 className="text-lg font-bold mb-4">Add Course</h2>
-              <input
-                className="w-full mb-2 border p-2 rounded"
-                placeholder="Term"
-                onChange={(e) =>
-                  setCourseForm({ ...courseForm, term: e.target.value })
-                }
-              />
-              <input
-                className="w-full mb-2 border p-2 rounded"
-                placeholder="Course Title"
-                onChange={(e) =>
-                  setCourseForm({ ...courseForm, title: e.target.value })
-                }
-              />
-              <input
-                className="w-full mb-2 border p-2 rounded"
-                placeholder="Units"
-                onChange={(e) =>
-                  setCourseForm({ ...courseForm, units: e.target.value })
-                }
-              />
-              <input
-                className="w-full mb-4 border p-2 rounded"
-                placeholder="Grade"
-                onChange={(e) =>
-                  setCourseForm({ ...courseForm, grade: e.target.value })
-                }
-              />
-              <div className="flex justify-between">
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl">
+              <div className="flex justify-end">
                 <button
                   onClick={() => setShowCourseModal(false)}
-                  className="bg-gray-300 px-4 py-2 rounded"
+                  className="text-gray-400 hover:text-black"
                 >
-                  Cancel
+                  <X />
                 </button>
+              </div>
+              <h2 className="text-xl font-bold mb-4">Add Course</h2>
+
+              {/* Term Selection */}
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Term</p>
+                <p className="text-sm text-gray-500 mb-2">
+                  Pick the semester term
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    "Summer 2024",
+                    "Fall 2024",
+                    "Winter 2025",
+                    "Spring 2025",
+                    "Summer 2025",
+                    "Fall 2025",
+                  ].map((term) => (
+                    <button
+                      key={term}
+                      onClick={() => setCourseForm({ ...courseForm, term })}
+                      className={`border rounded px-3 py-1 text-sm ${
+                        courseForm.term === term
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-gray-800"
+                      }`}
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Course Title */}
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Course Title</p>
+                <p className="text-sm text-gray-500 mb-1">
+                  Copy how your course is titled for your CC
+                </p>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  placeholder="e.g., MATH 285"
+                  value={courseForm.title}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (/^[a-zA-Z0-9\s]*$/.test(val)) {
+                      setCourseForm({ ...courseForm, title: val });
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Units */}
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Units</p>
+                <p className="text-sm text-gray-500 mb-1">
+                  How many semester units
+                </p>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  className="w-full border p-2 rounded"
+                  placeholder="e.g., 4.0"
+                  value={courseForm.units}
+                  onChange={(e) =>
+                    setCourseForm({ ...courseForm, units: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Grade */}
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Grade</p>
+                <p className="text-sm text-gray-500 mb-2">
+                  Pick final course grade
+                </p>
+                <div className="flex gap-3">
+                  {["A", "B", "C", "D", "F"].map((g) => (
+                    <button
+                      key={g}
+                      onClick={() => setCourseForm({ ...courseForm, grade: g })}
+                      className={`border px-4 py-2 rounded ${
+                        courseForm.grade === g ? "bg-blue-200" : "bg-white"
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-center">
                 <button
                   onClick={() => {
-                    setCourses([...courses, courseForm]);
-                    setShowCourseModal(false);
+                    if (
+                      courseForm.title &&
+                      courseForm.units &&
+                      courseForm.grade &&
+                      courseForm.term
+                    ) {
+                      setCourses([...courses, courseForm]);
+                      setCourseForm({
+                        term: "",
+                        title: "",
+                        units: "",
+                        grade: "",
+                      });
+                      setShowCourseModal(false);
+                    }
                   }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700"
                 >
-                  Confirm
+                  Confirm course
                 </button>
               </div>
             </div>
@@ -520,41 +735,77 @@ export default function Survey() {
         )}
 
         {showMajorModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-            <div className="bg-white p-6 rounded shadow-md w-96">
-              <h2 className="text-lg font-bold mb-4">Add School & Majors</h2>
-              <SearchInput
-                placeholder="School"
-                suggestions={UC_CAMPUSES}
-                onEnter={(val) => setMajorForm({ ...majorForm, school: val })}
-              />
-              <input
-                className="w-full my-2 border p-2 rounded"
-                placeholder="Primary Major"
-                onChange={(e) =>
-                  setMajorForm({ ...majorForm, primary: e.target.value })
-                }
-              />
-              <input
-                className="w-full mb-4 border p-2 rounded"
-                placeholder="Alternate Major"
-                onChange={(e) =>
-                  setMajorForm({ ...majorForm, alternate: e.target.value })
-                }
-              />
-              <div className="flex justify-between">
-                <button
-                  onClick={() => setShowMajorModal(false)}
-                  className="bg-gray-300 px-4 py-2 rounded"
-                >
-                  Cancel
-                </button>
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl">
+              <div className="flex justify-end">
                 <button
                   onClick={() => {
-                    setSchools([...schools, majorForm]);
+                    if (editingSchoolIndex !== null) {
+                      const restored = [...schools];
+                      restored.splice(editingSchoolIndex, 0, majorForm);
+                      setSchools(restored);
+                    }
                     setShowMajorModal(false);
+                    setEditingSchoolIndex(null);
+                    setMajorForm({ school: "", primary: "", alternate: "" });
                   }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="text-gray-400 hover:text-black"
+                >
+                  <X />
+                </button>
+              </div>
+
+              <h2 className="text-center text-blue-700 font-bold text-lg mb-6">
+                {majorForm.school}
+              </h2>
+
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Primary Major</p>
+                <input
+                  type="text"
+                  placeholder="Search for your primary major"
+                  className="w-full border p-2 rounded"
+                  value={majorForm.primary}
+                  onChange={(e) =>
+                    setMajorForm({ ...majorForm, primary: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="mb-4">
+                <p className="font-semibold mb-1">Alternative Major</p>
+                <input
+                  type="text"
+                  placeholder="Search for your alternate major"
+                  className="w-full border p-2 rounded"
+                  value={majorForm.alternate}
+                  onChange={(e) =>
+                    setMajorForm({ ...majorForm, alternate: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={() => {
+                    if (
+                      majorForm.school &&
+                      majorForm.primary &&
+                      majorForm.alternate
+                    ) {
+                      const updated = [...schools];
+                      if (editingSchoolIndex !== null) {
+                        updated.splice(editingSchoolIndex, 0, majorForm);
+                      } else {
+                        updated.push(majorForm);
+                      }
+                      setSchools(updated);
+                      setShowMajorModal(false);
+                      setMajorForm({ school: "", primary: "", alternate: "" });
+                      setEditingSchoolIndex(null);
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700"
                 >
                   Confirm
                 </button>
