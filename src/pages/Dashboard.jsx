@@ -1,12 +1,26 @@
 import { useNavigate } from "react-router-dom";
-import { signOut, getAuth } from "firebase/auth";
 import { useRef } from "react";
-import { motion } from "framer-motion"; // 👈 added this
+import { motion } from "framer-motion";
 import NavBar from "../components/NavBar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const howItWorksRef = useRef(null);
+
+  const videoRef = useRef(null);
+
+  const handleFullscreen = () => {
+    const video = videoRef.current;
+    if (video) {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-inter">
@@ -84,11 +98,11 @@ export default function Dashboard() {
                   {step === 1 && (
                     <>
                       <h3 className="font-semibold mb-1 text-lg">
-                        Select your target schools
+                        Fill out the starting form
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Choose the UCs you want to transfer to and your
-                        primary/secondary majors.
+                        Input your passed exams, community colleges, courses,
+                        and schools/majors you plan to transfer to.
                       </p>
                     </>
                   )}
@@ -109,9 +123,8 @@ export default function Dashboard() {
                         View your progress
                       </h3>
                       <p className="text-sm text-gray-600">
-                        Check the Dashboard tab to see how close you are to
-                        meeting each school’s GE, major prep, and elective
-                        requirements.
+                        Check the Home tab to see how close you are to meeting
+                        each school’s GE, major prep, and elective requirements.
                       </p>
                     </>
                   )}
@@ -129,9 +142,31 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <div className="bg-gray-200 h-56 rounded shadow-sm flex items-center justify-center">
-                <p className="text-xs text-gray-500">Screenshot of feature</p>
-              </div>
+              {step === 1 ? (
+                <div className="relative w-full aspect-video rounded shadow-sm overflow-hidden">
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover rounded ml-2 mt-2"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  >
+                    <source src="/videos/step1-demo.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <button
+                    onClick={handleFullscreen}
+                    className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded hover:bg-opacity-75 transition"
+                  >
+                    Fullscreen
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-gray-200 h-56 rounded shadow-sm flex items-center justify-center">
+                  <p className="text-xs text-gray-500">Screenshot of feature</p>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

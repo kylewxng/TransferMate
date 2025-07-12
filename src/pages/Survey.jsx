@@ -1,8 +1,7 @@
 // Survey.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react"; // Added Check icon import
 import NavBar from "../components/NavBar";
-import AppRouter from "../routes/AppRouter";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -17,17 +16,18 @@ const steps = [
 
 // Autofill options
 const AP_EXAMS = [
+  "AP 2-D Art and Design",
+  "AP 3-D Art and Design",
   "AP Art History",
   "AP Biology",
   "AP Calculus AB",
   "AP Calculus BC",
-  "AP Seminar",
-  "AP Research",
   "AP Chemistry",
   "AP Chinese Language and Culture",
   "AP Comparative Government and Politics",
   "AP Computer Science A",
   "AP Computer Science Principles",
+  "AP Drawing",
   "AP English Language and Composition",
   "AP English Literature and Composition",
   "AP Environmental Science",
@@ -46,86 +46,243 @@ const AP_EXAMS = [
   "AP Physics C: Electricity and Magnetism",
   "AP Physics C: Mechanics",
   "AP Psychology",
+  "AP Research",
+  "AP Seminar",
   "AP Spanish Language and Culture",
   "AP Spanish Literature and Culture",
   "AP Statistics",
-  "AP 2-D Art and Design",
-  "AP 3-D Art and Design",
-  "AP Drawing",
   "AP United States Government and Politics",
   "AP United States History",
   "AP World History: Modern",
 ];
 
 const IB_EXAMS = [
-  "IB Language A: Literature",
-  "IB Language A: Language and Literature",
-  "IB Literature and Performance",
-  "IB Classical Languages",
-  "IB Language B",
-  "IB Language Ab Initio",
+  "IB Anthropology",
+  "IB Astronomy",
+  "IB Biology",
+  "IB Brazilian Social Studies",
   "IB Business Management",
+  "IB Chemistry",
+  "IB Classical Languages",
+  "IB Computer Science",
+  "IB Dance",
+  "IB Design Technology",
+  "IB Digital Society",
   "IB Economics",
+  "IB Environmental Systems and Societies",
+  "IB Film",
   "IB Geography",
   "IB Global Politics",
   "IB History",
-  "IB Philosophy",
-  "IB Psychology",
-  "IB Social and Cultural Anthropology",
-  "IB World Religions",
-  "IB Environmental Systems and Societies",
-  "IB Digital Society",
-  "IB Brazilian Social Studies",
-  "IB Turkey in the 20th Century",
-  "IB World Arts and Cultures",
-  "IB Biology",
-  "IB Chemistry",
-  "IB Physics",
-  "IB Computer Science",
-  "IB Design Technology",
+  "IB Language A: Language and Literature",
+  "IB Language A: Literature",
+  "IB Language Ab Initio",
+  "IB Language B",
+  "IB Literary Art",
+  "IB Literature and Performance",
   "IB Marine Science",
-  "IB Astronomy",
-  "IB Nature of Science",
-  "IB Sports, Exercise and Health Science",
   "IB Mathematics: Analysis and Approaches",
   "IB Mathematics: Applications and Interpretation",
-  "IB Dance",
-  "IB Film",
   "IB Music",
+  "IB Nature of Science",
+  "IB Philosophy",
+  "IB Physics",
+  "IB Psychology",
+  "IB Social and Cultural Anthropology",
+  "IB Sports, Exercise and Health Science",
   "IB Theatre",
+  "IB Turkey in the 20th Century",
   "IB Visual Arts",
-  "IB Literary Art",
+  "IB World Arts and Cultures",
+  "IB World Religions",
 ];
 
 const COLLEGES = [
-  "Mt. San Antonio College",
-  "De Anza College",
-  "Rio Hondo College",
-  "Pasadena City College",
-  "Santa Monica College",
-  "Orange Coast College",
-  "Irvine Valley College",
-  "Fullerton College",
-  "El Camino College",
-  "Glendale Community College",
-  "Saddleback College",
   "Chabot College",
-  "Los Angeles City College",
-  "San Diego Mesa College",
   "City College of San Francisco",
+  "De Anza College",
+  "El Camino College",
+  "Fullerton College",
+  "Glendale Community College",
+  "Irvine Valley College",
+  "Los Angeles City College",
+  "Mt. San Antonio College",
+  "Orange Coast College",
+  "Pasadena City College",
+  "Rio Hondo College",
+  "Saddleback College",
+  "San Diego Mesa College",
+  "Santa Monica College",
 ];
 
 const UC_CAMPUSES = [
-  "University of California, Los Angeles (UCLA)",
-  "University of California, San Diego (UCSD)",
   "University of California, Berkeley (UCB)",
-  "University of California, Irvine (UCI)",
-  "University of California, Santa Barbara (UCSB)",
-  "University of California, Riverside (UCR)",
-  "University of California, Santa Cruz (UCSC)",
   "University of California, Davis (UCD)",
+  "University of California, Irvine (UCI)",
+  "University of California, Los Angeles (UCLA)",
   "University of California, Merced (UCM)",
+  "University of California, Riverside (UCR)",
+  "University of California, San Diego (UCSD)",
+  "University of California, Santa Barbara (UCSB)",
+  "University of California, Santa Cruz (UCSC)",
 ];
+
+const UC_MAJORS = {
+  "University of California, Los Angeles (UCLA)": [
+    "Biology",
+    "Business Economics",
+    "Communication",
+    "Computer Science",
+    "Economics",
+    "Electrical Engineering",
+    "English",
+    "History",
+    "Human Biology and Society",
+    "Mathematics",
+    "Physiological Science",
+    "Political Science",
+    "Psychology",
+    "Sociology",
+    "Statistics",
+  ],
+  "University of California, San Diego (UCSD)": [
+    "Biology",
+    "Cognitive Science",
+    "Computer Science",
+    "Data Science",
+    "Economics",
+    "Electrical Engineering",
+    "Human Biology",
+    "International Studies",
+    "Mathematics",
+    "Mechanical Engineering",
+    "Political Science",
+    "Psychology",
+    "Public Health",
+    "Sociology",
+    "Structural Engineering",
+  ],
+  "University of California, Berkeley (UCB)": [
+    "Business Administration",
+    "Cognitive Science",
+    "Computer Science",
+    "Data Science",
+    "Economics",
+    "Electrical Engineering and Computer Sciences (EECS)",
+    "Environmental Economics and Policy",
+    "History",
+    "Integrative Biology",
+    "Mechanical Engineering",
+    "Media Studies",
+    "Molecular and Cell Biology",
+    "Political Science",
+    "Psychology",
+    "Sociology",
+  ],
+  "University of California, Irvine (UCI)": [
+    "Biological Sciences",
+    "Biomedical Engineering",
+    "Business Administration",
+    "Computer Science",
+    "Criminology, Law and Society",
+    "Economics",
+    "English",
+    "Mathematics",
+    "Mechanical Engineering",
+    "Pharmaceutical Sciences",
+    "Political Science",
+    "Psychology",
+    "Public Health",
+    "Sociology",
+    "Software Engineering",
+  ],
+  "University of California, Santa Barbara (UCSB)": [
+    "Anthropology",
+    "Biological Sciences",
+    "Communication",
+    "Computer Science",
+    "Economics",
+    "Environmental Studies",
+    "Film and Media Studies",
+    "Global Studies",
+    "History",
+    "Mathematics",
+    "Mechanical Engineering",
+    "Physics",
+    "Political Science",
+    "Psychological and Brain Sciences",
+    "Sociology",
+  ],
+  "University of California, Riverside (UCR)": [
+    "Biology",
+    "Business Administration",
+    "Chemistry",
+    "Computer Science",
+    "Electrical Engineering",
+    "English",
+    "Environmental Science",
+    "History",
+    "Mathematics",
+    "Media and Cultural Studies",
+    "Mechanical Engineering",
+    "Political Science",
+    "Psychology",
+    "Public Policy",
+    "Sociology",
+  ],
+  "University of California, Santa Cruz (UCSC)": [
+    "Anthropology",
+    "Art",
+    "Biology",
+    "Business Management Economics",
+    "Cognitive Science",
+    "Computer Science",
+    "Earth Sciences",
+    "Environmental Studies",
+    "Film and Digital Media",
+    "Game Design",
+    "Literature",
+    "Mathematics",
+    "Politics",
+    "Psychology",
+    "Sociology",
+  ],
+  "University of California, Davis (UCD)": [
+    "Animal Science",
+    "Biological Sciences",
+    "Communication",
+    "Computer Science",
+    "Economics",
+    "Environmental Science and Management",
+    "Food Science",
+    "History",
+    "Human Development",
+    "Managerial Economics",
+    "Mathematics",
+    "Mechanical Engineering",
+    "Neurobiology, Physiology and Behavior",
+    "Political Science",
+    "Psychology",
+    "Sociology",
+  ],
+  "University of California, Merced (UCM)": [
+    "Bioengineering",
+    "Biological Sciences",
+    "Chemistry",
+    "Cognitive Science",
+    "Computer Science and Engineering",
+    "Economics",
+    "Environmental Systems Science",
+    "Literature and Cultures",
+    "Management and Business Economics",
+    "Mechanical Engineering",
+    "Physics",
+    "Political Science",
+    "Psychology",
+    "Public Health",
+    "Sociology",
+  ],
+};
 
 export default function Survey() {
   const navigate = useNavigate();
@@ -151,6 +308,8 @@ export default function Survey() {
   });
   const [schoolSearch, setSchoolSearch] = useState("");
   const [editingSchoolIndex, setEditingSchoolIndex] = useState(null);
+  const [miscUnits, setMiscUnits] = useState("");
+  const [majorSuggestions, setMajorSuggestions] = useState([]);
 
   const handleAddItem = (item, list, setList) => {
     if (item.trim() && !list.includes(item)) {
@@ -238,26 +397,45 @@ export default function Survey() {
     </div>
   );
 
-  const SearchInput = ({ placeholder, onEnter, suggestions }) => {
-    const [value, setValue] = useState("");
+  const SearchInput = ({ placeholder, onEnter, suggestions, value = "" }) => {
+    const [internalValue, setInternalValue] = useState(value);
     const [filtered, setFiltered] = useState([]);
+    const [isFocused, setIsFocused] = useState(false);
+
+    useEffect(() => {
+      setInternalValue(value);
+    }, [value]);
 
     const handleChange = (e) => {
       const val = e.target.value;
-      setValue(val);
+      setInternalValue(val);
+      const filteredList = val
+        ? suggestions.filter((s) => s.toLowerCase().includes(val.toLowerCase()))
+        : suggestions;
+      setFiltered(filteredList);
+    };
+
+    const handleFocus = () => {
+      setIsFocused(true);
       setFiltered(
-        val
+        internalValue
           ? suggestions.filter((s) =>
-              s.toLowerCase().includes(val.toLowerCase())
+              s.toLowerCase().includes(internalValue.toLowerCase())
             )
-          : []
+          : suggestions
       );
+    };
+
+    const handleBlur = () => {
+      // Delay hiding to allow click selection
+      setTimeout(() => setIsFocused(false), 150);
     };
 
     const handleSelect = (item) => {
       onEnter(item);
-      setValue("");
+      setInternalValue("");
       setFiltered([]);
+      setIsFocused(false);
     };
 
     return (
@@ -266,13 +444,16 @@ export default function Survey() {
           type="text"
           className="w-full border rounded-lg p-2 mt-4 shadow-sm"
           placeholder={placeholder}
-          value={value}
+          value={internalValue}
           onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onKeyDown={(e) =>
-            e.key === "Enter" && (onEnter(value), setValue(""), setFiltered([]))
+            e.key === "Enter" &&
+            (onEnter(internalValue), setInternalValue(""), setFiltered([]))
           }
         />
-        {filtered.length > 0 && (
+        {isFocused && filtered.length > 0 && (
           <ul className="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
             {filtered.map((item, idx) => (
               <li
@@ -426,51 +607,23 @@ export default function Survey() {
               </p>
 
               <div className="relative max-w-lg mb-6">
-                <div className="absolute left-3 top-3 text-gray-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm"
+                <SearchInput
                   placeholder="Search UC campuses"
                   value={schoolSearch}
-                  onChange={(e) => setSchoolSearch(e.target.value)}
+                  onEnter={(selected) => {
+                    setMajorForm({
+                      school: selected,
+                      primary: "",
+                      alternate: "",
+                    });
+                    setShowMajorModal(true);
+                    setSchoolSearch("");
+                    setEditingSchoolIndex(null);
+                  }}
+                  suggestions={UC_CAMPUSES.filter(
+                    (s) => !schools.some((sch) => sch.school === s)
+                  )}
                 />
-                {schoolSearch && (
-                  <ul className="absolute z-10 bg-white border w-full mt-1 rounded shadow max-h-40 overflow-y-auto">
-                    {UC_CAMPUSES.filter(
-                      (s) =>
-                        s.toLowerCase().includes(schoolSearch.toLowerCase()) &&
-                        !schools.some((sch) => sch.school === s)
-                    ).map((school, idx) => (
-                      <li
-                        key={idx}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          setMajorForm({ school, primary: "", alternate: "" });
-                          setShowMajorModal(true);
-                          setSchoolSearch("");
-                          setEditingSchoolIndex(null);
-                        }}
-                      >
-                        {school}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -593,6 +746,25 @@ export default function Survey() {
                 )}
               </section>
 
+              <section className="mb-6">
+                <h2 className="font-semibold text-lg mb-2">
+                  Miscellaneous Units
+                </h2>
+                <p className="text-sm text-gray-600 mb-2">
+                  Enter any additional transferable units not already counted
+                  above (e.g., military credit, external exams).
+                </p>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  className="w-full max-w-xs border p-2 rounded"
+                  placeholder="e.g., 3.5"
+                  value={miscUnits}
+                  onChange={(e) => setMiscUnits(e.target.value)}
+                />
+              </section>
+
               <button
                 onClick={handleConfirm}
                 className="bg-green-600 text-white px-6 py-3 rounded text-lg font-semibold hover:bg-green-700 transition"
@@ -601,6 +773,24 @@ export default function Survey() {
               </button>
             </div>
           )}
+          <div className="mt-8 flex justify-between">
+            {currentStep > 0 && (
+              <button
+                onClick={() => setCurrentStep(currentStep - 1)}
+                className="text-blue-600 font-semibold hover:underline"
+              >
+                Back
+              </button>
+            )}
+            {currentStep < steps.length - 1 && (
+              <button
+                onClick={() => setCurrentStep(currentStep + 1)}
+                className="bg-blue-600 text-white px-6 py-2 rounded-full shadow hover:bg-blue-700"
+              >
+                Next
+              </button>
+            )}
+          </div>
         </main>
 
         {showCourseModal && (
@@ -761,27 +951,25 @@ export default function Survey() {
 
               <div className="mb-4">
                 <p className="font-semibold mb-1">Primary Major</p>
-                <input
-                  type="text"
+                <SearchInput
                   placeholder="Search for your primary major"
-                  className="w-full border p-2 rounded"
                   value={majorForm.primary}
-                  onChange={(e) =>
-                    setMajorForm({ ...majorForm, primary: e.target.value })
+                  onEnter={(val) =>
+                    setMajorForm({ ...majorForm, primary: val })
                   }
+                  suggestions={UC_MAJORS[majorForm.school] || []}
                 />
               </div>
 
               <div className="mb-4">
-                <p className="font-semibold mb-1">Alternative Major</p>
-                <input
-                  type="text"
+                <p className="font-semibold mb-1">Alternate Major</p>
+                <SearchInput
                   placeholder="Search for your alternate major"
-                  className="w-full border p-2 rounded"
                   value={majorForm.alternate}
-                  onChange={(e) =>
-                    setMajorForm({ ...majorForm, alternate: e.target.value })
+                  onEnter={(val) =>
+                    setMajorForm({ ...majorForm, alternate: val })
                   }
+                  suggestions={UC_MAJORS[majorForm.school] || []}
                 />
               </div>
 
