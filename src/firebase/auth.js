@@ -1,4 +1,4 @@
-import { auth } from "./srcfirebase";
+import { auth, db } from "./srcfirebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -8,6 +8,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+
+import { doc, setDoc } from "firebase/firestore";
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
@@ -21,24 +23,25 @@ export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-    return result;
-  // add user to firestore
+
+  const firstName = user.displayName?.split(" ")[0] || "";
+
+  await setDoc(
+    doc(db, "users", user.uid),
+    {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName || "",
+      firstName: firstName,
+      photoURL: user.photoURL || "",
+      createdAt: new Date(),
+    },
+    { merge: true }
+  );
+
+  return result;
 };
 
 export const doSignOut = () => {
   return auth.signOut();
 };
-
-// export const doPasswordReset = (email) => {
-//   return sendPasswordResetEmail(auth, email);
-// };
-
-// export const doPasswordChange = (password) => {
-//   return updatePassword(auth.currentUser, password);
-// };
-
-// export const doSendEmailVerification = () => {
-//   return sendEmailVerification(auth.currentUser, {
-//     url: `${window.location.origin}/home`,
-//   });
-// };

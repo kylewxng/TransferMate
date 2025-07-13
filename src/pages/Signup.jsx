@@ -6,7 +6,7 @@ import {
 } from "../firebase/auth";
 import { useAuth } from "../contexts/authContext";
 import { db } from "../firebase/srcfirebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ export default function Signup() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,17 +27,23 @@ export default function Signup() {
       setErrorMessage("Passwords do not match.");
       return;
     }
+
     setIsRegistering(true);
     try {
       const userCredential = await doCreateUserWithEmailAndPassword(
         email,
         password
       );
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        firstName,
         createdAt: new Date(),
       });
+
+      navigate("/dashboard");
     } catch (err) {
       setErrorMessage(err.message);
       setIsRegistering(false);
@@ -50,17 +57,20 @@ export default function Signup() {
       const result = await doSignInWithGoogle();
       const user = result.user;
       const userRef = doc(db, "users", user.uid);
-      await setDoc(
-        userRef,
-        {
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName || "",
+          firstName: user.displayName?.split(" ")[0] || "",
           photoURL: user.photoURL || "",
           createdAt: new Date(),
-        },
-        { merge: true }
-      );
+        });
+      }
+
+      navigate("/dashboard");
     } catch (err) {
       setErrorMessage(err.message);
       setIsRegistering(false);
@@ -84,6 +94,20 @@ export default function Signup() {
         </p>
 
         <form onSubmit={handleEmailSignup}>
+          <div className="mb-3">
+            <label className="block text-gray-700 mb-1 text-sm">
+              First Name
+            </label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Your First Name"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-purple-200"
+              required
+            />
+          </div>
+
           <div className="mb-3">
             <label className="block text-gray-700 mb-1 text-sm">Email</label>
             <input
