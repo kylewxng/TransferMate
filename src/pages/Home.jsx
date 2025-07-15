@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/srcfirebase";
 import { motion } from "framer-motion";
+import { computeUnitsFromData } from "../utilities/computeUnits";
+import { CountdownTimer } from "../utilities/countdown";
 
 export default function Home() {
   const { currentUser, firstName } = useAuth();
@@ -11,40 +13,34 @@ export default function Home() {
     ucCourses: { completed: 0, total: 0 },
     apExams: { completed: 0, total: 0 },
     ibExams: { completed: 0, total: 0 },
+    miscUnits: 0,
   });
 
   useEffect(() => {
-    if (currentUser) {
-      const fetchData = async () => {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setUnitData({
-            ucCourses: {
-              completed: data.ucTransferableCompleted || 0,
-              total: data.ucTransferableTotal || 0,
-            },
-            apExams: {
-              completed: data.apCompleted || 0,
-              total: data.apTotal || 0,
-            },
-            ibExams: {
-              completed: data.ibCompleted || 0,
-              total: data.ibTotal || 0,
-            },
-          });
-        }
-      };
-      fetchData();
-    }
+    const fetchCourseData = async () => {
+      if (!currentUser) return;
+      const docRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const computed = computeUnitsFromData(docSnap.data());
+        setUnitData(computed);
+      }
+    };
+
+    fetchCourseData();
   }, [currentUser]);
 
   const overallCompleted =
     unitData.ucCourses.completed +
     unitData.apExams.completed +
-    unitData.ibExams.completed;
+    unitData.ibExams.completed +
+    unitData.miscUnits;
+
   const overallTotal =
-    unitData.ucCourses.total + unitData.apExams.total + unitData.ibExams.total;
+    unitData.ucCourses.total +
+    unitData.apExams.total +
+    unitData.ibExams.total +
+    unitData.miscUnits;
 
   return (
     <div className="min-h-screen bg-white font-inter">
@@ -114,6 +110,17 @@ export default function Home() {
                       {unitData.ibExams.total.toFixed(2)}
                     </td>
                   </tr>
+                  <tr>
+                    <td className="border px-4 py-2">Miscellaneous</td>
+                    <td className="border px-4 py-2">0.00</td>
+                    <td className="border px-4 py-2">
+                      {unitData.miscUnits.toFixed(2)}
+                    </td>
+                    <td className="border px-4 py-2">
+                      {unitData.miscUnits.toFixed(2)}
+                    </td>
+                  </tr>
+
                   <tr className="font-semibold bg-gray-50">
                     <td className="border px-4 py-2">Overall Total:</td>
                     <td className="border px-4 py-2">0.00</td>
@@ -137,7 +144,38 @@ export default function Home() {
                 Minimum GE requirement for UC transfer eligibility
               </p>
               <details className="border px-4 py-2 rounded cursor-pointer">
-                <summary className="cursor-pointer"></summary>
+                <summary className="cursor-pointer font-medium text-gray-800"></summary>
+                <div className="mt-3 text-sm text-gray-700 space-y-2">
+                  <p>
+                    Complete the following <strong>7-course pattern</strong> by
+                    the end of the spring term prior to fall enrollment at UC:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>Two transferable courses in English composition</li>
+                    <li>
+                      One transferable course in mathematical concepts and
+                      quantitative reasoning
+                    </li>
+                    <li>
+                      Four transferable college courses chosen from at least two
+                      of the following subject areas:
+                      <ul className="list-disc list-inside ml-5">
+                        <li>arts and humanities</li>
+                        <li>social and behavioral sciences</li>
+                        <li>physical and biological sciences</li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <p className="italic text-gray-600">For example:</p>
+                  <ul className="list-disc list-inside italic text-gray-600 ml-5">
+                    <li>3 chemistry courses and 1 history course</li>
+                    <li>
+                      2 sociology courses, 1 physics course, and 1 art history
+                      course
+                    </li>
+                    <li>1 biology course and 3 literature courses</li>
+                  </ul>
+                </div>
               </details>
             </div>
 
@@ -147,7 +185,114 @@ export default function Home() {
                 Program to fulfill all lower-division GE requirements for UCs
               </p>
               <details className="border px-4 py-2 rounded cursor-pointer">
-                <summary className="cursor-pointer"></summary>
+                <summary className="cursor-pointer font-medium text-gray-800"></summary>
+                <div className="mt-4 text-sm text-gray-700">
+                  <table className="table-auto w-full border border-gray-300 text-left text-sm">
+                    <thead className="bg-gray-100 text-gray-700">
+                      <tr>
+                        <th className="px-4 py-2 border">Subject area</th>
+                        <th className="px-4 py-2 border">Required courses</th>
+                        <th className="px-4 py-2 border">Units required</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>1. English Communication</strong>
+                          <br />
+                          <span className="text-gray-600">
+                            One course in English composition and one course in
+                            critical thinking/English composition.
+                          </span>
+                        </td>
+                        <td className="border px-4 py-2">2 courses</td>
+                        <td className="border px-4 py-2">
+                          6 semester units or 8–10 quarter units
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>
+                            2. Mathematical Concepts and Quantitative Reasoning
+                          </strong>
+                        </td>
+                        <td className="border px-4 py-2">1 course</td>
+                        <td className="border px-4 py-2">
+                          3 semester units or 4–5 quarter units
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>3. Arts and Humanities</strong>
+                          <br />
+                          <span className="text-gray-600">
+                            Three courses with at least one from the arts and
+                            one from the humanities.
+                          </span>
+                        </td>
+                        <td className="border px-4 py-2">3 courses</td>
+                        <td className="border px-4 py-2">
+                          9 semester units or 12–15 quarter units
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>4. Social and Behavioral Sciences</strong>
+                          <br />
+                          <span className="text-gray-600">
+                            Two courses from at least two disciplines or in an
+                            interdisciplinary sequence.
+                          </span>
+                        </td>
+                        <td className="border px-4 py-2">2 courses</td>
+                        <td className="border px-4 py-2">
+                          6 semester units or 8–10 quarter units
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>5. Physical and Biological Sciences</strong>
+                          <br />
+                          <span className="text-gray-600">
+                            One physical science course and one biological
+                            science course, at least one of which includes a
+                            laboratory.
+                          </span>
+                        </td>
+                        <td className="border px-4 py-2">2 courses</td>
+                        <td className="border px-4 py-2">
+                          7–9 semester units or 9–12 quarter units
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>6. Language Other than English</strong>
+                          <br />
+                          <span className="text-gray-600">
+                            Proficiency equivalent to two years of high school
+                            courses in the same language.
+                          </span>
+                        </td>
+                        <td className="border px-4 py-2">Proficiency</td>
+                        <td className="border px-4 py-2">Proficiency</td>
+                      </tr>
+                      <tr>
+                        <td className="border px-4 py-2">
+                          <strong>7. Ethnic Studies</strong>
+                        </td>
+                        <td className="border px-4 py-2">1 course</td>
+                        <td className="border px-4 py-2">
+                          3 semester units or 4–5 quarter units
+                        </td>
+                      </tr>
+                      <tr className="font-semibold bg-gray-50">
+                        <td className="border px-4 py-2">Total:</td>
+                        <td className="border px-4 py-2">11 courses</td>
+                        <td className="border px-4 py-2">34 semester units</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </details>
             </div>
           </div>
@@ -158,10 +303,7 @@ export default function Home() {
               <p className="font-semibold text-sm mb-1">
                 Countdown to UC App Deadline
               </p>
-              <div className="text-3xl font-bold">06:21:04</div>
-              <p className="text-xs text-gray-600">
-                months&nbsp;&nbsp;&nbsp;&nbsp;hours&nbsp;&nbsp;&nbsp;&nbsp;days
-              </p>
+              <CountdownTimer />
             </div>
 
             <div className="bg-white shadow rounded p-4 mb-4">

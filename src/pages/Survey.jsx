@@ -4,6 +4,9 @@ import { X, Check } from "lucide-react"; // Added Check icon import
 import NavBar from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase/srcfirebase";
+import { useAuth } from "../contexts/authContext";
 
 const steps = [
   "AP Exams",
@@ -286,6 +289,7 @@ const UC_MAJORS = {
 
 export default function Survey() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [apExams, setApExams] = useState([]);
@@ -470,9 +474,26 @@ export default function Survey() {
     );
   };
 
-  const handleConfirm = () => {
-    // Here you could do final submission logic if needed
-    navigate("/home");
+  const handleConfirm = async () => {
+    if (!currentUser) return;
+
+    const userData = {
+      apExams,
+      ibExams,
+      colleges,
+      courses,
+      schools,
+      miscUnits,
+    };
+
+    try {
+      await setDoc(doc(db, "users", currentUser.uid), userData, {
+        merge: true,
+      });
+      navigate("/home");
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
   };
 
   return (
