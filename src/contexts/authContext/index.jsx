@@ -46,7 +46,13 @@ export const AuthProvider = ({ children }) => {
         isFirestoreVerified,
       }}
     >
-      {children}
+      {currentUser === undefined ? (
+        <div className="min-h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

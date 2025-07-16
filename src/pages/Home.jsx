@@ -6,8 +6,10 @@ import { db } from "../firebase/srcfirebase";
 import { motion } from "framer-motion";
 import { computeUnitsFromData } from "../utilities/computeUnits";
 import { CountdownTimer } from "../utilities/countdown";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
   const { currentUser, firstName } = useAuth();
   const [unitData, setUnitData] = useState({
     ucCourses: { completed: 0, total: 0 },
@@ -15,6 +17,8 @@ export default function Home() {
     ibExams: { completed: 0, total: 0 },
     miscUnits: 0,
   });
+  const [schools, setSchools] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -22,8 +26,20 @@ export default function Home() {
       const docRef = doc(db, "users", currentUser.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const computed = computeUnitsFromData(docSnap.data());
-        setUnitData(computed);
+        const data = docSnap.data();
+
+        setSchools(data.schools || []);
+        const units = computeUnitsFromData(data);
+        setUnitData(units);
+
+        if (["/", "/dashboard", "/survey"].includes(location.pathname)) {
+          navigate("/home", { replace: true });
+        }
+      } else {
+        // If user doc does not exist, force survey
+        if (location.pathname !== "/survey") {
+          navigate("/survey", { replace: true });
+        }
       }
     };
 
@@ -295,6 +311,42 @@ export default function Home() {
                 </div>
               </details>
             </div>
+            <div className="bg-white rounded-lg shadow p-4 mt-6">
+              <h2 className="font-semibold text-lg mb-4">Transfer Readiness</h2>
+              <div className="space-y-4">
+                {schools.map((school, index) => (
+                  <div
+                    key={index}
+                    className="rounded-lg px-4 py-2 bg-green-100 border border-green-300"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-blue-700 font-medium">
+                          {school.school}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          {school.primary} / {school.alternate}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold">GPA Range:</span> 3.85
+                          - 4.00
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-semibold">Major Prep:</span> 8/8
+                          courses completed
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 font-semibold">Your UC GPA: 3.95</p>
+              <button className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700">
+                View full plan
+              </button>
+            </div>
           </div>
 
           {/* Right Sidebar */}
@@ -350,10 +402,63 @@ export default function Home() {
             <div className="bg-white shadow rounded p-4">
               <p className="font-semibold mb-1">Important Deadlines</p>
               <p className="text-xs text-gray-600">
-                <strong>July 1–31, 2024</strong>
+                <strong>July 1–31, 2025</strong>
                 <br />
                 Winter/spring 2025 application filing period for Merced,
                 Riverside and Santa Cruz.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>August 1, 2025</strong>
+                <br />
+                Application opens for fall 2026.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>September 1-30, 2025</strong>
+                <br />
+                Transfer Admission Guarantee (TAG) application filing period for
+                fall 2026.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>October 1 - November 30, 2025</strong>
+                <br />
+                Fall 2026 general admission application filing period.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>January 31, 2026</strong>
+                <br />
+                Transfer Application Update (TAU) opens to report fall grades
+                and IP or PL coursework.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>March 1 - May 1, 2026</strong>
+                <br />
+                Notification period of fall 2026 admission decisions.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>June 1, 2026</strong>
+                <br />
+                Deadline for admitted students to submit Statement of Intent to
+                Register (SIR).
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>July 1, 2026</strong>
+                <br />
+                Deadline to submit final, official transcripts to the campus
+                admissions.
+              </p>
+              <br />
+              <p className="text-xs text-gray-600">
+                <strong>July 15, 2026</strong>
+                <br />
+                Deadline to submit official AP, IB scores and other docs to the
+                campus admissions.
               </p>
             </div>
           </div>

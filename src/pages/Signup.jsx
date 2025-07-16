@@ -41,6 +41,8 @@ export default function Signup() {
         email: user.email,
         firstName,
         createdAt: new Date(),
+        schools: [],
+        courses: [],
       });
 
       navigate("/dashboard");

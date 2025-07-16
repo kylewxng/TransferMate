@@ -106,7 +106,7 @@ export default function Login() {
 
         <p className="text-center text-xs mb-3">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/signup")}
             className="text-gray-500 underline"
           >
             Create an account here.

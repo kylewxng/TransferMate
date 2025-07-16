@@ -2,10 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import NavBar from "../components/NavBar";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/srcfirebase";
+import { useAuth } from "../contexts/authContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const howItWorksRef = useRef(null);
+  const { currentUser } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   const videoRef = useRef(null);
 
@@ -21,6 +27,37 @@ export default function Dashboard() {
       }
     }
   };
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if (!currentUser) return;
+
+      const docRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      const data = docSnap.data();
+
+      const hasSchools =
+        Array.isArray(data?.schools) && data.schools.length > 0;
+      const hasCourses =
+        Array.isArray(data?.courses) && data.courses.length > 0;
+
+      if (hasSchools && hasCourses) {
+        navigate("/home", { replace: true });
+      } else {
+        setLoading(false); // Only stop loading if survey needed
+      }
+    };
+
+    checkUser();
+  }, [currentUser]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600">
+        Checking your data...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white font-inter">

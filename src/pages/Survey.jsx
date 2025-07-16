@@ -475,6 +475,11 @@ export default function Survey() {
   };
 
   const handleConfirm = async () => {
+    console.log("Confirm button clicked");
+    if (!currentUser || !currentUser.uid) {
+      console.warn("No currentUser or UID available yet");
+      return;
+    }
     if (!currentUser) return;
 
     const userData = {
