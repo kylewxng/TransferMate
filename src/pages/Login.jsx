@@ -5,6 +5,8 @@ import {
   doSignInWithGoogle,
 } from "../firebase/auth";
 import { useAuth } from "../contexts/authContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/srcfirebase";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -20,8 +22,26 @@ export default function Login() {
     e.preventDefault();
     setIsSigningIn(true);
     try {
-      await doSignInWithEmailAndPassword(email, password);
-      alert("Signed in successfully");
+      const userCredential = await doSignInWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      const data = docSnap.data();
+
+      const hasSchools =
+        Array.isArray(data?.schools) && data.schools.length > 0;
+      const hasCourses =
+        Array.isArray(data?.courses) && data.courses.length > 0;
+
+      if (hasSchools && hasCourses) {
+        navigate("/home", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
     } catch (err) {
       setErrorMessage(err.message);
       setIsSigningIn(false);
@@ -32,15 +52,28 @@ export default function Login() {
     e.preventDefault();
     setIsSigningIn(true);
     try {
-      await doSignInWithGoogle();
-      alert("Signed in successfully");
+      const result = await doSignInWithGoogle();
+      const user = result.user;
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      const data = docSnap.data();
+
+      const hasSchools =
+        Array.isArray(data?.schools) && data.schools.length > 0;
+      const hasCourses =
+        Array.isArray(data?.courses) && data.courses.length > 0;
+
+      if (hasSchools && hasCourses) {
+        navigate("/home", { replace: true });
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
     } catch (err) {
       setErrorMessage(err.message);
       setIsSigningIn(false);
     }
   };
-
-  if (userLoggedIn) return <Navigate to="/dashboard" replace />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f4efef] font-inter">

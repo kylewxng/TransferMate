@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Survey from "../pages/Survey";
 import Home from "../pages/Home";
+import About from "../pages/About";
 import RouteRedirector from "../routes/RouteRedirector";
 
 function AppRouter() {
@@ -14,6 +15,7 @@ function AppRouter() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/survey" element={<Survey />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/about" element={<About />} />
       <Route path="*" element={<RouteRedirector />} />
     </Routes>
   );
