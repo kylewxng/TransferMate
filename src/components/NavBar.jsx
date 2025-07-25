@@ -28,7 +28,12 @@ function NavBar() {
           >
             Courses
           </button>
-          <button className="hover:text-gray-600">Planner</button>
+          <button
+            className="hover:text-gray-600"
+            onClick={() => navigate("/planner")}
+          >
+            Planner
+          </button>
           <button
             className="hover:text-gray-600"
             onClick={() => navigate("/about")}

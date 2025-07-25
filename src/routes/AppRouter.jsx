@@ -6,6 +6,7 @@ import Survey from "../pages/Survey";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Courses from "../pages/Courses";
+import Planner from "../pages/Planner";
 import RouteRedirector from "../routes/RouteRedirector";
 
 function AppRouter() {
@@ -17,6 +18,7 @@ function AppRouter() {
       <Route path="/survey" element={<Survey />} />
       <Route path="/home" element={<Home />} />
       <Route path="/courses" element={<Courses />} />
+      <Route path="/planner" element={<Planner />} />
       <Route path="/about" element={<About />} />
       <Route path="*" element={<RouteRedirector />} />
     </Routes>
