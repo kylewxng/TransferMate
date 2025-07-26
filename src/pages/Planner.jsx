@@ -74,17 +74,21 @@ export default function Planner() {
 
   // Function to get the next term
   const getNextTerm = (currentTerm) => {
-    const termMap = {
-      Summer: "Fall",
-      Fall: "Winter",
-      Winter: "Spring",
-      Spring: "Summer",
-    };
-    const year = parseInt(currentTerm.split(" ")[1]);
-    const term = currentTerm.split(" ")[0];
-    const nextTerm = termMap[term];
-    const nextYear = term === "Spring" ? year + 1 : year;
-    return `${nextTerm} ${nextYear}`;
+    const [term, yearStr] = currentTerm.split(" ");
+    const year = parseInt(yearStr);
+
+    switch (term) {
+      case "Summer":
+        return `Fall ${year}`;
+      case "Fall":
+        return `Winter ${year + 1}`;
+      case "Winter":
+        return `Spring ${year}`;
+      case "Spring":
+        return `Summer ${year}`;
+      default:
+        return "";
+    }
   };
 
   const handleDeleteTerm = () => {

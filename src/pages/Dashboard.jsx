@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/srcfirebase";
 import { useAuth } from "../contexts/authContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const howItWorksRef = useRef(null);
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
 
   const videoRef = useRef(null);
 
@@ -59,6 +61,36 @@ export default function Dashboard() {
     );
   }
 
+  const testimonials = [
+    {
+      quote:
+        "TransferMate helped me organize my coursework better than any counselor ever could. The layout made it easy to visualize what I still needed, and I was able to confidently apply to five UCs knowing I met the major prep for each.",
+      name: "Sofia G.",
+    },
+    {
+      quote:
+        "As a working student, I didn’t have time to track every requirement manually. TransferMate did the heavy lifting for me. The planner let me spot gaps early and fix them before applying to UCLA.",
+      name: "Jason L.",
+    },
+    {
+      quote:
+        "I used to feel totally overwhelmed. Between GE, IGETC, and major prep, I never knew what I was missing. This platform gave me peace of mind and kept me on track to transfer in two years.",
+      name: "Renee T.",
+    },
+  ];
+
+  const nextTestimonial = () => {
+    setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setTestimonialIndex((prev) =>
+      prev === 0 ? testimonials.length - 1 : prev - 1
+    );
+  };
+
+  const current = testimonials[testimonialIndex];
+
   return (
     <div className="min-h-screen bg-white font-inter">
       <NavBar />
@@ -98,8 +130,41 @@ export default function Dashboard() {
         </div>
 
         {/* Carousel Placeholder */}
-        <div className="bg-gray-200 h-80 flex items-center justify-center rounded shadow mb-10">
-          <p className="text-sm text-gray-700">Infinite carousel app demo...</p>
+        <div className="relative max-w-3xl mx-auto mb-12 px-4">
+          <div className="bg-white border border-gray-200 shadow-md rounded-xl p-12 text-center">
+            {/* Quotation Icon */}
+            <div className="flex mb-4 ml-4">
+              <img
+                src="../images/quote.png" // ← Replace this path with your own icon
+                alt="Quote icon"
+                className="w-6 h-6"
+              />
+            </div>
+
+            {/* Quote Text */}
+            <p className="text-base text-gray-800 mb-6 leading-relaxed">
+              {current.quote}
+            </p>
+
+            {/* Name */}
+            <p className="text-sm text-gray-600 font-semibold">
+              — {current.name}
+            </p>
+          </div>
+
+          {/* Arrows */}
+          <button
+            onClick={prevTestimonial}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white border rounded-full shadow p-2 hover:bg-gray-50"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <button
+            onClick={nextTestimonial}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white border rounded-full shadow p-2 hover:bg-gray-50"
+          >
+            <ChevronRight className="w-5 h-5 text-gray-600" />
+          </button>
         </div>
       </motion.main>
 
