@@ -182,7 +182,7 @@ export default function Dashboard() {
           How does TransferMate work?
         </h2>
 
-        <div className="bg-white border rounded-xl shadow-sm p-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="bg-white border rounded-xl shadow-sm p-10 grid grid-cols-1 md:grid-cols-2 gap-16 max-w-7xl mx-auto">
           {[1, 2, 3, 4].map((step) => (
             <motion.div
               key={step}
@@ -244,7 +244,7 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              {step === 1 ? (
+              {step === 1 && (
                 <div className="relative w-full aspect-video rounded shadow-sm overflow-hidden">
                   <video
                     ref={videoRef}
@@ -264,10 +264,30 @@ export default function Dashboard() {
                     Fullscreen
                   </button>
                 </div>
-              ) : (
-                <div className="bg-gray-200 h-56 rounded shadow-sm flex items-center justify-center">
-                  <p className="text-xs text-gray-500">Screenshot of feature</p>
-                </div>
+              )}
+
+              {step === 2 && (
+                <img
+                  src="../images/step2.jpg"
+                  alt="Step 2 screenshot"
+                  className="w-full rounded shadow-sm"
+                />
+              )}
+
+              {step === 3 && (
+                <img
+                  src="../images/step3.jpg"
+                  alt="Step 3 screenshot"
+                  className="w-full rounded shadow-sm"
+                />
+              )}
+
+              {step === 4 && (
+                <img
+                  src="../images/step4.jpg"
+                  alt="Step 4 screenshot"
+                  className="w-full rounded shadow-sm"
+                />
               )}
             </motion.div>
           ))}

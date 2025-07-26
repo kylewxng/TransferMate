@@ -14,7 +14,7 @@ function NavBar() {
 
   return (
     <header className="sticky top-0 bg-white z-50">
-      <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="w-full px-8 py-4 flex items-center justify-between fixed top-0 left-0 z-50 bg-white">
         <div
           className="flex items-center cursor-pointer"
           onClick={() => safeNavigate("/home")}
@@ -67,6 +67,7 @@ function NavBar() {
           Log out
         </button>
       </nav>
+      <div className="h-20" />
     </header>
   );
 }

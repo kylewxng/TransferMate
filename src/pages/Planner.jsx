@@ -366,6 +366,12 @@ export default function Planner() {
             </div>
           </div>
         )}
+        <div className="text-center mt-8 mb-5">
+          <p className="text-sm text-gray-400">
+            Disclaimer: Plans are based on assist.org data. Always confirm with
+            your counselor before finalizing.
+          </p>
+        </div>
       </motion.div>
     </>
   );
