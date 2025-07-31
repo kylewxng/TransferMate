@@ -42,7 +42,7 @@ TransferMate is a web application designed to help California community college 
 To run locally:
 
 ```bash
-git clone https://github.com/your-username/transfermate.git
+git clone https://github.com/kylewxng/transfermate.git
 cd transfermate
 npm install
 npm start
