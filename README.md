@@ -2,23 +2,23 @@
 
 TransferMate is a web application designed to help California community college students navigate the complex University of California (UC) transfer process with clarity and confidence. Built by a UCLA transfer student, the platform enables users to track their academic progress, GPA, and major-specific requirements across multiple UC campuses.
 
-🌐 [Coming Soon]  
+[Coming Soon]  
 (Currently pitching to institutional partners; ASSIST.org API integration in progress.)
 
 ---
 
-## 💡 Features
+## Features
 
-- 📋 Track IGETC and UC 7-course pattern progress  
-- 🎯 Monitor completed courses, transferable units, and GPA  
-- 🧠 Compare major-specific prep across different UC campuses  
-- 📊 Personalized dashboard generated dynamically based on user input  
-- 🔐 User authentication with persistent Firestore database integration  
-- 🔄 Real-time updates and course tracking for transparency and ease
+- Track IGETC and UC 7-course pattern progress  
+- Monitor completed courses, transferable units, and GPA  
+- Compare major-specific prep across different UC campuses  
+- Personalized dashboard generated dynamically based on user input  
+- User authentication with persistent Firestore database integration  
+- Real-time updates and course tracking for transparency and ease
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React.js, Tailwind CSS  
 - **Backend / Database**: Firebase (Firestore), Firebase Auth  
@@ -28,7 +28,7 @@ TransferMate is a web application designed to help California community college 
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. **User Sign-Up** – Students create an account using Firebase Auth.  
 2. **Survey Input** – Users enter completed coursework, exam credit, and school preferences.  
@@ -37,7 +37,7 @@ TransferMate is a web application designed to help California community college 
 
 ---
 
-## 📦 Installation
+## Installation
 
 To run locally:
 
