@@ -125,7 +125,7 @@ export default function About() {
           </motion.div>
         </div>
 
-        {/* Meet the Team Section*/}
+        {/* Meet the Founder Section*/}
         <motion.div
           key="step-1"
           whileInView={{ opacity: 1, y: 0 }}
@@ -133,48 +133,48 @@ export default function About() {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-2xl font-bold mt-20 mb-6">Meet the Team</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {/* Card Template */}
+          <h2 className="text-2xl font-bold mt-20 mb-6">Meet the Founder</h2>
+          <div className="flex items-center justify-center gap-8">
+            {/* Founder Card */}
             {[
               {
                 name: "Kyle Wong",
-                title: "Co-Founder",
-                profilePic: "../images/kyle.jpg",
-                desc: "Hey everyone, I'm Kyle a 1-year transfer from Mt. SAC and a UCLA admit for Data Theory, B.S. I really hope this app helps make the transfer process a little clearer and easier for you, thanks so much for checking our work out!",
-              },
-              {
-                name: "Bradley Co",
-                title: "Co-Founder",
-                profilePic: "../images/pfp.png",
-              },
-              {
-                name: "Camden Simardjaja",
-                title: "Co-Founder",
-                profilePic: "../images/pfp.png",
-              },
-              {
-                name: "Siwoo Chung",
-                title: "Co-Founder",
-                profilePic: "../images/pfp.png",
+                title: "Statistics and Data Science Engineering @ UCLA",
+                profilePic: "../images/kyle.jpg", // Path to the profile image
+                desc: "Hey everyone, I'm Kyle, a 1-year transfer from Mt. SAC and a UCLA admit for Data Theory, B.S. As a past California community college student, I really hope this app helps make the transfer process a little clearer and easier for you, thanks so much for checking my work out!",
               },
             ].map((member, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl shadow border px-6 py-6 text-center transition transform hover:scale-105 hover:shadow-lg hover:shadow-indigo-200 duration-300"
+                className="flex items-center bg-white rounded-xl shadow-lg border px-8 py-10 max-w-4xl w-full text-center transition transform hover:scale-105 hover:shadow-indigo-200 duration-300"
               >
-                <img
-                  src={member.profilePic}
-                  alt={member.name}
-                  className="w-20 h-20 mx-auto mb-4 rounded-full shadow-md"
-                />
-                <h3 className="font-semibold text-base">{member.name}</h3>
-                <p className="text-sm text-gray-600 mb-3">{member.title}</p>
-                {member.desc && (
-                  <p className="text-sm text-gray-700 text-left">
-                    {member.desc}
-                  </p>
-                )}
+                {/* Profile Image */}
+                <div className="flex-none w-48 h-48 rounded-full overflow-hidden mx-auto shadow-lg mb-4">
+                  <img
+                    src={member.profilePic}
+                    alt={member.name}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+
+                {/* Text Section */}
+                <div className="ml-8 text-left flex-grow">
+                  <h3 className="font-semibold text-3xl mb-2">{member.name}</h3>
+                  <p className="text-lg text-gray-600 mb-4">{member.title}</p>
+                  {member.desc && (
+                    <p className="text-sm text-gray-700">{member.desc}</p>
+                  )}
+
+                  {/* LinkedIn URL */}
+                  <a
+                    href={"https://www.linkedin.com/in/kylewxng/"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-sm text-indigo-600 hover:text-indigo-800 transition duration-200"
+                  >
+                    linkedin/kylewxng
+                  </a>
+                </div>
               </div>
             ))}
           </div>
